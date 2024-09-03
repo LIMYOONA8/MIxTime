@@ -4,6 +4,7 @@ from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
 from utils.tools import EarlyStopping, adjust_learning_rate, visual, save_to_csv, visual_weights
 from utils.metrics import metric
+from torch.nn.parallel import DistributedDataParallel as DDP
 import torch
 import torch.nn as nn
 from torch import optim
@@ -11,6 +12,7 @@ import os
 import time
 import warnings
 import numpy as np
+import torch.distributed as dist
 
 warnings.filterwarnings('ignore')
 
@@ -23,7 +25,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         model = self.model_dict[self.args.model].Model(self.args).float()
 
         if self.args.use_multi_gpu and self.args.use_gpu:
-            model = nn.DataParallel(model, device_ids=self.args.device_ids)
+            #model = nn.DataParallel(model, device_ids=self.args.device_ids)
+            model = DDP(model)
         return model
 
     def _get_data(self, flag):
@@ -128,7 +131,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
             self.model.train()
             epoch_time = time.time()
-
+            train_loader.sampler.set_epoch(epoch)
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(train_loader):
                 iter_count += 1
                 model_optim.zero_grad()
@@ -174,6 +177,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     train_loss.append(loss.item())
 
                 if (i + 1) % 100 == 0:
+                    dist.all_reduce(loss,op=dist.ReduceOp.AVG)
                     print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item()))
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.args.train_epochs - epoch) * train_steps - i)

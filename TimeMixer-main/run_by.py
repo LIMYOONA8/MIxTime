@@ -1,8 +1,10 @@
 import argparse
+import os
+
 import torch
 import random
 import numpy as np
-
+import torch.distributed as dist
 # 导入你的实验模块
 from exp.exp_anomaly_detection import Exp_Anomaly_Detection
 from exp.exp_classification import Exp_Classification
@@ -95,6 +97,7 @@ def main(args):
         torch.cuda.empty_cache()
 
 if __name__ == '__main__':
+    dist.init_process_group(backend='nccl')
     parser = argparse.ArgumentParser(description='TimeMixer')
     # 这里添加所有的argparse参数定义
     # basic config

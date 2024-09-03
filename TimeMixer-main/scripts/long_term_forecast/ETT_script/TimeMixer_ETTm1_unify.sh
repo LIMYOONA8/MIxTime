@@ -40,7 +40,7 @@ python -u run_by.py \
 python -u run_by.py \
   --task_name long_term_forecast \
   --is_training 1 \
-  --root_path ./dataset/ETT-small/ \
+  --root_path C:/Users/35327/Desktop/安徽大学程文林/深度学习论文/深度学习代码/时间序列数据集/ \
   --data_path ETTm1.csv \
   --model_id ETTm1_$seq_len'_'192 \
   --model $model_name \
@@ -66,7 +66,7 @@ python -u run_by.py \
 python -u run_by.py \
   --task_name long_term_forecast \
   --is_training 1 \
-  --root_path ./dataset/ETT-small/ \
+  --root_path C:/Users/35327/Desktop/安徽大学程文林/深度学习论文/深度学习代码/时间序列数据集/ \
   --data_path ETTm1.csv \
   --model_id ETTm1_$seq_len'_'336 \
   --model $model_name \
@@ -92,7 +92,7 @@ python -u run_by.py \
 python -u run_by.py \
   --task_name long_term_forecast \
   --is_training 1 \
-  --root_path ./dataset/ETT-small/ \
+  --root_path C:/Users/35327/Desktop/安徽大学程文林/深度学习论文/深度学习代码/时间序列数据集/ \
   --data_path ETTm1.csv \
   --model_id ETTm1_$seq_len'_'720 \
   --model $model_name \
